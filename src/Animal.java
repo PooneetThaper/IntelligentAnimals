@@ -1,16 +1,30 @@
-/**
- * Created by Pthaper on 3/30/17.
- */
-public abstract class Animal extends Entity{
-    protected static final int MAX_ENERGY = 20; // Energy at which they stop going after food
-    protected static final int BIRTH_ENERGY = 25; // Energy at which they are allowed to give birth
-    protected static final int BIRTH_AGE = 5; // Age at which they are allowed to give birth
-    protected static final int START_ENERGY = 10;
-    protected static final int FOOD_ENERGY = 10;
+import java.util.ArrayList;
+import java.util.Random;
+
+public abstract class Animal extends Entity {
     protected static final double MAX_SIGHT_DISTANCE = 10.0;
-    protected int energy = START_ENERGY;
-    protected int age = 0;
+    protected static final double MAX_ENERGY = 20; // energy at which animal stops going after food
+    protected final int lifespan; // age when the animal dies
+    protected final int reproduceEnergy; // energy given to its offspring when it gives birth
+    protected double energy; // current energy
+    protected int reproduceAge;
     protected int cantMove = 0;
+    private Random rand = new Random();
+    
+    public Animal(World world, Location location) {
+        super(world, location);
+        lifespan = rand.nextInt(3) + 15; // lifespan can be from 15 to 17
+        reproduceEnergy = rand.nextInt(3) + 7; // reproduceEnergy can be from 7 to 9
+        energy = rand.nextInt(3) + 4; // initial energy can be from 4 to 6
+        reproduceAge = rand.nextInt(3) + 8; // reproduceAge can be from 8 to 10
+    }
+    
+    public double getEnergy() {return energy;}
+    
+    public abstract int weighOptions();
+    public abstract int weighOptions(boolean noStay);
+    public abstract void giveBirth();
+    public abstract void act();
 
     // Movement         1
     //                4 0 2
@@ -20,82 +34,65 @@ public abstract class Animal extends Entity{
     //public abstract int bestMove();
 
     //Change state of
-    public void move(int direction){
+    public void move(int direction) {
         //System.out.print(this);
         //System.out.println(" wants to move in direction " + direction);
-        switch (direction){
+        int locationX = location.getX();
+        int locationY = location.getY();
+        switch (direction) {
             case 1:
-                if (Location.y>0) {
-                    Location.yUp();
+                if (locationY > 0) {
+                    location.yUp();
                 }
                 break;
             case 2:
-                if (Location.x<(EncapsulatingWorld.getXSize()-1)) {
-                    Location.xRight();
+                if (locationX < (world.getXSize() - 1)) {
+                    location.xRight();
                 }
                 break;
             case 3:
-                if (Location.y<(EncapsulatingWorld.getYSize()-1)) {
-                    Location.yDown();
+                if (locationY < (world.getYSize() - 1)) {
+                    location.yDown();
                 }
                 break;
             case 4:
-                if (Location.x>0) {
-                    Location.xLeft();
+                if (locationX > 0) {
+                    location.xLeft();
                 }
                 break;
         }
     }
 
-    public Coordinate getBestBirthPlace(int direction){
-        Coordinate birthPlace = null;
-        switch (direction){
+    public Location getBestBirthPlace(int direction) {
+        Location birthPlace = null;
+        int locationX = location.getX();
+        int locationY = location.getY();
+        switch (direction) {
             case 1:
-                if (Location.y>0 && EncapsulatingWorld.isValid(Location.x,Location.y-1)) {
-                    birthPlace = new Coordinate(Location.x,Location.y-1);
+                if (locationY > 0 && world.isValid(locationX, locationY - 1)) {
+                    birthPlace = new Location(locationX, locationY - 1);
                 }
                 break;
             case 2:
-                if (Location.x<(EncapsulatingWorld.getXSize()-1) && EncapsulatingWorld.isValid(Location.x+1,Location.y)) {
-                    birthPlace = new Coordinate(Location.x+1,Location.y);
+                if (locationX < (world.getXSize() - 1) && world.isValid(locationX + 1, locationY)) {
+                    birthPlace = new Location(locationX + 1, locationY);
                 }
                 break;
             case 3:
-                if (Location.y<(EncapsulatingWorld.getYSize()-1) && EncapsulatingWorld.isValid(Location.x,Location.y+1)) {
-                    birthPlace = new Coordinate(Location.x,Location.y+1);
+                if (locationY < (world.getYSize() - 1) && world.isValid(locationX, locationY + 1)) {
+                    birthPlace = new Location(locationX, locationY + 1);
                 }
                 break;
             case 4:
-                if (Location.x>0 && EncapsulatingWorld.isValid(Location.x-1,Location.y)) {
-                    birthPlace = new Coordinate(Location.x-1,Location.y);
+                if (locationX > 0 && world.isValid(locationX - 1, locationY)) {
+                    birthPlace = new Location(locationX - 1, locationY);
                 }
                 break;
         }
         return birthPlace;
     }
 
-    public abstract int weighOptions();
-    public abstract int weighOptions(boolean noStay);
-
-    public void update(){
-        age++;
-        energy--;
-        if (energy > BIRTH_ENERGY && age > BIRTH_AGE) this.giveBirth();
+    public boolean canMove() {
+        return age >= cantMove;
     }
-
-    public int getAge(){ return age;}
-
-    public int getEnergy(){ return energy;}
-
-    public void ateFood(){
-        energy += FOOD_ENERGY;
-        if (energy > BIRTH_ENERGY && age > BIRTH_AGE) this.giveBirth();
-        if (this instanceof Herbivore && energy > BIRTH_ENERGY - 5 && age > BIRTH_AGE) this.giveBirth();
-    }
-
-    public abstract void giveBirth();
-
-    public boolean canMove() {return age >= cantMove;}
-
-
 }

@@ -1,26 +1,29 @@
-/**
- * Created by Pthaper on 3/30/17.
- */
-public class Plant extends Entity{
-    private int age;
+import java.util.Random;
 
-    public Plant(World world, Coordinate location){
-        super.EncapsulatingWorld = world;
-        super.Location = location;
-        age = Math.abs(EncapsulatingWorld.random.nextInt())%3;
+public class Plant extends Entity {
+    Random rand = new Random();
+
+    private final int lifespan;
+
+    public Plant(World world, Location location) {
+        super(world, location);
+        lifespan = rand.nextInt(3) + 7; // lifespan can be from 7 to 9
     }
 
-    public Plant(World world, Coordinate location, int age){
-        super.EncapsulatingWorld = world;
-        super.Location = location;
-        this.age = age;
-    }
+    public int getLifespan() {return lifespan;}
 
-    public void update(){
+    public void act() {
+        if (age > lifespan) {
+            if (world.getShowAll()) {
+                System.out.print(this);
+                System.out.print("\tdied at ");
+                System.out.print(location);
+                System.out.println(String.format("\tAge: %d", age));
+            }
+            this.removeSelfFromWorld();
+        }
         age++;
     }
-
-    public int getAge(){ return age;}
 
     @Override
     public char getChar(){

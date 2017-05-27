@@ -1,34 +1,40 @@
+import java.util.Random;
 import java.util.Scanner;
 
-/**
- * Created by Pthaper on 3/31/17.
- */
 public class Driver {
     public static void main(String[] args) {
-
         Scanner in = new Scanner(System.in);
-
+        int xDim = 0;
+        int yDim = 0;
+        int numIterations = 0;
+        
         System.out.print("Input desired x dimension for simulation: ");
-        int xDim = in.nextInt();
+        if (in.hasNextInt()) {
+            xDim = in.nextInt();
+        }
 
         System.out.print("Input desired y dimension for simulation: ");
-        int yDim = in.nextInt();
+        if (in.hasNextInt()) {
+            yDim = in.nextInt();
+        }
 
         System.out.print("Input desired number of iterations for simulation: ");
-        int numIterations = in.nextInt();
-
-
+        if (in.hasNextInt()) {
+            numIterations = in.nextInt();
+        }
+        
+        in.close();
 
         // By default World shows all events verbosely
         // To prevent this, add a parameter false after the current parameters of constructor
         World w = new World(xDim, yDim, false);
         //World w = new World(xDim, yDim, false);
-        w.printMap(); // Blank map
+        System.out.println(w); // Blank map
 
         //Start off with about 2.9 percent as Carnivores, 10 percent as Herbivores, and 50 percent as plants
         System.out.print("Generating living creatures (2.9% carnivores, 10% herbivores, and 50% plants of all spaces)\n");
         w.initialSpawn(xDim * yDim / 35,  xDim * yDim / 10, xDim * yDim / 5);
-        w.printMap(); // Initial map (Clock = 0)
+        System.out.println(w); // Initial map (Clock = 0)
 
         // DOCUMENTATION:
 
@@ -78,9 +84,8 @@ public class Driver {
         // Loop will continue until all animals are dead or until iterations are up
         while (numIterations > 0 && w.hasAnimals()){
             w.update();
-            w.printMap();
-            numIterations --;
+            System.out.println(w);
+            numIterations--;
         }
-
     }
 }
