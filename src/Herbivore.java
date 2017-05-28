@@ -36,7 +36,6 @@ public class Herbivore extends Animal {
         }
     }
 
-
     @Override
     public char getChar(){
         return '&';

@@ -14,9 +14,14 @@ public abstract class Entity {
         clock = world.getClock();
     }
 
+    public World getWorld() {return world;}
+    public Location getLocation() {return location;}
     public int getAge() {return age;}
+    public boolean isAlive() {return isAlive;}
+    public int getClock() {return clock;}
 
     public abstract void act();
+    public abstract char getChar();
 
     // removes this Entity from the world
     public void removeSelfFromWorld() {
@@ -40,14 +45,8 @@ public abstract class Entity {
             world.getPlants().remove(this);
         }
         map[x][y] = null;
-        //world = null;
-        //location = null;
+        // world = null;
+        // location = null;
         isAlive = false;
     }
-    
-    public abstract char getChar();
-
-    public boolean isAlive(){return isAlive;}
-    public World getWorld(){return world;}
-    public Location getLocation(){return location;}
 }

@@ -3,7 +3,7 @@ import java.util.Random;
 
 public class World {
     private int clock = 0;
-    private int lenX, lenY;
+    private final int lenX, lenY;
     private Entity[][] Map;
     private ArrayList<Animal> Animals = new ArrayList<>();
     private ArrayList<Plant> Plants = new ArrayList<>();
@@ -33,9 +33,9 @@ public class World {
     public ArrayList<Plant> getPlants() {return Plants;}
     public boolean getShowAll() {return showAll;}
 
-    public ArrayList<Animal> randomPermute(ArrayList<Animal> A){
+    public ArrayList<Animal> randomPermute(ArrayList<Animal> A) {
         ArrayList<Animal> retval = new ArrayList<>();
-        while(A.size() > 0){
+        while (A.size() > 0) {
             int index = ((Math.abs(random.nextInt())) % A.size());
             retval.add(A.get(index));
             A.remove(index);
@@ -115,13 +115,13 @@ public class World {
     //     return p;
     // }
 
-    public void spawnPlant(){
+    public void spawnPlant() {
         int x = Math.abs(random.nextInt()) % lenX;
         int y = Math.abs(random.nextInt()) % lenY;
         Location loc = new Location(x, y);
         if (isEmpty(loc)) {
             Plant added = new Plant(this, loc);
-            if (showAll){
+            if (showAll) {
                 System.out.print(added);
                 System.out.print("\tspawned at ");
                 System.out.println(loc);
@@ -207,10 +207,10 @@ public class World {
 
         for (int i = 0; i < Animals.size(); i++) {
             Animal currentAnimal = Animals.get(i);
-            currentAnimal.act();
+            // currentAnimal.act();
             if (!currentAnimal.canMove()){
                 //Can this animal move yet after being born
-                if(showAll){
+                if (showAll) {
                     System.out.print(currentAnimal);
                     System.out.print("\tcant move yet. ");
                     System.out.println(String.format("\tAge: %d, Energy: %d",currentAnimal.getAge(), currentAnimal.getEnergy()));
@@ -238,7 +238,12 @@ public class World {
     public void updatePlants() {
         for (int i = 0; i < Plants.size(); i++){
             Plant currentPlant = Plants.get(i);
-            currentPlant.act();
+            if (!isPlant(currentPlant.getLocation())) {
+                Plants.remove(currentPlant);
+            }
+            else {
+                currentPlant.act();
+            }
         }
     }
 

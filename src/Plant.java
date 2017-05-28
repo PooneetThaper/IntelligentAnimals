@@ -1,6 +1,6 @@
 import java.util.Random;
 
-public class Plant extends Entity implements Living{
+public class Plant extends Entity implements Living {
     Random rand = new Random();
 
     private final int lifespan;
@@ -14,24 +14,28 @@ public class Plant extends Entity implements Living{
 
     public void act() {
         if (!isAlive) return;
-        if (age > lifespan) {
+        if (age > lifespan || getEnergy() <= 0) {
             if (world.getShowAll()) {
                 System.out.print(this);
                 System.out.print("\tdied at ");
                 System.out.print(location);
                 System.out.println(String.format("\tAge: %d", age));
             }
-            this.removeSelfFromWorld();
+            removeSelfFromWorld();
             return;
         }
         age++;
     }
 
     @Override
-    public int getEnergy() {return lifespan - age;}
+    public int getEnergy() {
+        // in case an herbivore eats the plant at its last cycle,
+        // it still gets some energy
+        return lifespan - age + 1;
+    }
 
     @Override
-    public char getChar(){
+    public char getChar() {
         return '*';
     }
 }

@@ -225,6 +225,7 @@ public abstract class Animal extends Entity implements Living {
 
     public void eat(Living eaten) {
         energy += eaten.getEnergy();
+        System.out.println(eaten);
         eaten.removeSelfFromWorld();
         if (world.getShowAll()) {
             System.out.print(this);
@@ -232,19 +233,22 @@ public abstract class Animal extends Entity implements Living {
             System.out.print(eaten);
             System.out.print(" at ");
             System.out.print(location);
-            System.out.println(String.format("\tNew Energy: %d", energy));
+            // System.out.println(String.format("\tNew Energy: %d", energy));
+            System.out.printf("\tNew Energy: %d", energy);
         }
     }
 
-    private void tryToEat(Entity[][] map){
+    private void tryToEat(Entity[][] map) {
         int currentX = location.getX();
         int currentY = location.getY();
         char currentEntity = map[currentX][currentY].getChar();
 
         // Is this animal allowed to eat the entity at the current location
-        if (!Arrays.asList(foodChars).contains(currentEntity)) return;
+        if (!Arrays.asList(foodChars).contains(currentEntity)) {
+            return;
+        }
         Living eaten;
-        switch (currentEntity){
+        switch (currentEntity) {
             case '&':
                 eaten = (Herbivore)map[currentX][currentY];
                 eat(eaten);
@@ -258,7 +262,6 @@ public abstract class Animal extends Entity implements Living {
                 eat(eaten);
                 break;
         }
-
     }
 
     public void act() {
@@ -287,7 +290,7 @@ public abstract class Animal extends Entity implements Living {
             System.out.println("\t" + start + " -> " + location);
         }
 
-        if (map[endX][endY]!= null && map[endX][endY] != this) {
+        if (map[endX][endY] != null && map[endX][endY] != this) {
             tryToEat(map);
         }
         map[endX][endY] = this;
@@ -296,15 +299,15 @@ public abstract class Animal extends Entity implements Living {
             map[startX][startY] = null;
         }
 
-        if(clock != world.getClock()) {
+        if (clock != world.getClock()) {
             age++;
             energy--;
             clock = world.getClock();
-            if(energy < 5 && !(this instanceof Omnivore)) desperate();
+            if (energy < 5 && !(this instanceof Omnivore)) desperate();
         }
     }
 
-    private void desperate(){
+    private void desperate() {
         removeSelfFromWorld();
         Omnivore o = new Omnivore(this);
         if (world.getShowAll()) {
