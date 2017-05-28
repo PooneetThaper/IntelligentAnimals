@@ -27,7 +27,7 @@ public class Driver {
 
         // By default World shows all events verbosely
         // To prevent this, add a parameter false after the current parameters of constructor
-        World w = new World(xDim, yDim, false);
+        World w = new World(xDim, yDim);
         //World w = new World(xDim, yDim, false);
         System.out.println(w); // Blank map
 

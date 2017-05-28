@@ -3,6 +3,7 @@ public abstract class Entity {
     protected Location location;
     protected int age; // everything should have an age
     protected boolean isAlive; // if we're adding rocks, then i guess they're always alive?
+    protected int clock;
     
     public Entity(World world, Location location) {
         this.world = world;
@@ -10,6 +11,7 @@ public abstract class Entity {
         this.location = location;
         age = 0;
         isAlive = true;
+        clock = world.getClock();
     }
 
     public int getAge() {return age;}
@@ -38,10 +40,14 @@ public abstract class Entity {
             world.getPlants().remove(this);
         }
         map[x][y] = null;
-        world = null;
-        location = null;
+        //world = null;
+        //location = null;
         isAlive = false;
     }
     
     public abstract char getChar();
+
+    public boolean isAlive(){return isAlive;}
+    public World getWorld(){return world;}
+    public Location getLocation(){return location;}
 }

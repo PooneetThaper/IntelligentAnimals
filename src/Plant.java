@@ -1,6 +1,6 @@
 import java.util.Random;
 
-public class Plant extends Entity {
+public class Plant extends Entity implements Living{
     Random rand = new Random();
 
     private final int lifespan;
@@ -13,6 +13,7 @@ public class Plant extends Entity {
     public int getLifespan() {return lifespan;}
 
     public void act() {
+        if (!isAlive) return;
         if (age > lifespan) {
             if (world.getShowAll()) {
                 System.out.print(this);
@@ -21,9 +22,13 @@ public class Plant extends Entity {
                 System.out.println(String.format("\tAge: %d", age));
             }
             this.removeSelfFromWorld();
+            return;
         }
         age++;
     }
+
+    @Override
+    public int getEnergy() {return lifespan - age;}
 
     @Override
     public char getChar(){

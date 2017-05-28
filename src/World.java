@@ -132,6 +132,10 @@ public class World {
     // Pathfinding Methods
 
     public ArrayList<Location> exhaustiveBFS(Location start, char target, double maxDist, boolean exhaustive) {
+        return exhaustiveBFS(start,new char[]{target}, maxDist, exhaustive);
+    }
+
+    public ArrayList<Location> exhaustiveBFS(Location start, char[] targets, double maxDist, boolean exhaustive) {
         ArrayList<Location> found = new ArrayList<>();
         Queue<Location> seen = new Queue<>();
         Queue<Location> queue = new Queue<>();
@@ -142,10 +146,12 @@ public class World {
             int currentY = current.getY();
 
             if (Map[currentX][currentY] != null) {
-                if (Map[currentX][currentY].getChar() == target) {
-                    found.add(current);
-                    if (!exhaustive) {
-                        break;
+                for (char target: targets){
+                    if (Map[currentX][currentY].getChar() == target) {
+                        found.add(current);
+                        if (!exhaustive) {
+                            break;
+                        }
                     }
                 }
             }
@@ -216,13 +222,15 @@ public class World {
             currentAnimal.act();
             // Carnivores are likely to get a second move
             if (currentAnimal instanceof Carnivore) {
-                if (currentAnimal.getAge() % 2 == 1 && (Math.abs(random.nextInt()) % 10 > 3)) {currentAnimal.act();
+                if (currentAnimal.getAge() % 2 == 1 && (Math.abs(random.nextInt()) % 10 > 3)) {
+                    currentAnimal.act();
                 }
             }
             // All animals have the chance to have a bonus move (about 3/10)
-            if (Math.abs(random.nextInt()) % 10 > 6) {
+            if (Math.abs(random.nextInt()) % 10 > 7) {
                 currentAnimal.act();
             }
+
         }
 
     }
