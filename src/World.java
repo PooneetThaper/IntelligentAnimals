@@ -203,9 +203,7 @@ public class World {
             if (Math.abs(random.nextInt()) % 10 > 7) {
                 currentAnimal.act();
             }
-
         }
-
     }
 
     public void updatePlants() {

@@ -223,19 +223,22 @@ public abstract class Animal extends Entity implements Living {
     }
 
     public void eat(Living eaten) {
-        // char eatenAsChar = ((Entity)eaten).getChar();
-        // if (new String(foodChars).indexOf(eatenAsChar) == -1) {
-        //     if (world.getShowAll()) {
-        //         System.out.printf("%s\tcan't eat %s%n", this, eaten);
-        //     }
-        //     return;
-        // }
+    // public boolean eat(Living eaten) {
+    //     char eatenAsChar = ((Entity)eaten).getChar();
+    //     // Is this animal allowed to eat the entity at the current location
+    //     if (new String(foodChars).indexOf(eatenAsChar) == -1) {
+    //         if (world.getShowAll()) {
+    //             System.out.printf("%s\tcan't eat %s%n", this, eaten);
+    //         }
+    //         return false;
+    //     }
         energy += (eaten).getEnergy();
         eaten.removeSelfFromWorld();
         if (world.getShowAll()) {
             System.out.printf("%s\tate %s at %s\tNew Energy: %d%n", 
                 this, eaten, location, energy);
         }
+        // return true;
     }
 
     private boolean tryToEat(Entity[][] map) {
@@ -271,11 +274,6 @@ public abstract class Animal extends Entity implements Living {
 
     public void act() {
         if (!isAlive) return;
-        Entity[][] map = world.getMap();
-        Location start = new Location(location);
-        int startX = start.getX();
-        int startY = start.getY();
-
         if (age > lifespan || energy < 0) {
             if (world.getShowAll()) {
                 System.out.printf("%s\tdied at %s\tAge: %d, Energy: %d%n", 
@@ -284,6 +282,12 @@ public abstract class Animal extends Entity implements Living {
             this.removeSelfFromWorld();
             return;
         }
+
+        Entity[][] map = world.getMap();
+        Location start = new Location(location);
+        int startX = start.getX();
+        int startY = start.getY();
+
         move(weighOptions());
         Location end = new Location(location);
         int endX = location.getX();
@@ -293,16 +297,35 @@ public abstract class Animal extends Entity implements Living {
             System.out.printf("%s\t%s -> %s%n", this, start, end);
         }
 
-        // boolean shouldMove;
-        if (!world.isEmpty(end) && map[endX][endY] != this) {
-            tryToEat(map);
+        boolean shouldMove = false;
+        if (world.isEmpty(end)) {
+            shouldMove = true;
+        }
+        else {
+            // end location is not empty and this animal is not located there
+            if (map[endX][endY] != this) {
+                shouldMove = tryToEat(map);
+                // Entity e = map[endX][endY];
+                // shouldMove = eat((Living)e);
+            }
         }
 
-        map[endX][endY] = this;
+        if (shouldMove) {
+            map[endX][endY] = this;
+        }
+        else {
+            // if it shouldn't move, then the animal's location should 
+            // be the same as where it started
+            end = new Location(start);
+        }
 
         if (!start.equals(end)) {
             map[startX][startY] = null;
         }
+
+        // no matter what happens, make sure to set the location to the end
+        //  in case the move method changed the location when it shouldn't have
+        location = end;
 
         if (clock != world.getClock()) {
             age++;
