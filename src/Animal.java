@@ -6,7 +6,7 @@ public abstract class Animal extends Entity implements Living {
     protected static final double MAX_SIGHT_DISTANCE = 10.0;
     protected static final double MAX_ENERGY = 20; // energy at which animal stops going after food
     protected final int lifespan; // age when the animal dies
-    protected final int reproduceEnergy; // energy given to its offspring when it gives birth
+    protected final int reproduceEnergy; // minimum energy needed to reproduce
     protected int energy; // current energy
     protected int reproduceAge;
     protected int cantMove = 0;
@@ -24,7 +24,7 @@ public abstract class Animal extends Entity implements Living {
     
     public int getEnergy() {return energy;}
     public int weighOptions() {return weighOptions(false);}
-    public abstract void giveBirth();
+    public abstract boolean giveBirth();
 
     // Movement         1
     //                4 0 2
@@ -89,11 +89,22 @@ public abstract class Animal extends Entity implements Living {
                 }
                 break;
         }
+        // temporary fix
+        if (birthPlace != null && !world.isEmpty(birthPlace)) {
+            birthPlace = null;
+        }
         return birthPlace;
     }
 
     public boolean canMove() {
-        return age >= cantMove;
+        if (age < cantMove) {
+            if (world.getShowAll()) {
+                System.out.printf("%s\tat %s can't move yet.\tAge: %d, Energy: %d%n",
+                    this, location, age, energy);
+            }
+            return false;
+        }
+        return true;
     }
 
     public int weighOptions(boolean noStay) {
@@ -273,7 +284,10 @@ public abstract class Animal extends Entity implements Living {
     }
 
     public void act() {
+        // animal should not do anything if it's not alive
         if (!isAlive) return;
+
+        // animal should die if it is too old or if it has no energy
         if (age > lifespan || energy < 0) {
             if (world.getShowAll()) {
                 System.out.printf("%s\tdied at %s\tAge: %d, Energy: %d%n", 
@@ -283,6 +297,23 @@ public abstract class Animal extends Entity implements Living {
             return;
         }
 
+        // if animal is a newborn and can't move, it should just age up and lose energy
+        if (!canMove()) {
+            age++;
+            energy--;
+            return;
+        }
+
+        // animal should try to give birth if it can
+        if (age >= reproduceAge && energy > reproduceEnergy) {
+            // if it gave birth successfully, it can't move this turn
+            if (giveBirth()) {
+                age++;
+                return;
+            }
+        }
+
+        // otherwise, try to move
         Entity[][] map = world.getMap();
         Location start = new Location(location);
         int startX = start.getX();
@@ -331,8 +362,12 @@ public abstract class Animal extends Entity implements Living {
             age++;
             energy--;
             clock = world.getClock();
-            if (energy < 5 && !(this instanceof Omnivore)) desperate();
+            if (energy < 5 && !(this instanceof Omnivore)) {
+                desperate();
+            }
         }
+        age++;
+        energy--;
     }
 
     private void desperate() {

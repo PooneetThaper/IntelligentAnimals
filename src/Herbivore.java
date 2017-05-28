@@ -12,7 +12,7 @@ public class Herbivore extends Animal {
     }
 
     @Override
-    public void giveBirth() {
+    public boolean giveBirth() {
         //Choose the best spot to give birth to new baby
         Location birthPlace = super.getBestBirthPlace(this.weighOptions(true));
         //Not in the best position to give birth;
@@ -20,7 +20,7 @@ public class Herbivore extends Animal {
             if (world.getShowAll()) {
                 System.out.printf("%s\ttried to gve birth but did not find optimal spot%n", this);
             }
-            return;
+            return false;
         }
         Herbivore h = new Herbivore(world, birthPlace);
         h.cantMove = Math.abs(rand.nextInt() % 2) + 1;
@@ -28,10 +28,12 @@ public class Herbivore extends Animal {
         // increase age when carnivores can reproduce so they won't
         // multiply too quickly after every turn
         reproduceAge += rand.nextInt(2) + 2;
+        
         if (world.getShowAll()) {
             System.out.printf("%s\tgave birth at %s\tNew Energy: %d%n",
                 this, birthPlace, energy);
         }
+        return true;
     }
 
     @Override

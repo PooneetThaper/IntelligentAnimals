@@ -12,7 +12,7 @@ public class Carnivore extends Animal {
     }
 
     @Override
-    public void giveBirth() {
+    public boolean giveBirth() {
         //Choose the best spot to give birth to new baby
         Location birthPlace = super.getBestBirthPlace(this.weighOptions(true));
         //Not in the best position to give birth;
@@ -20,7 +20,7 @@ public class Carnivore extends Animal {
             if (world.getShowAll()) {
                 System.out.printf("%s\ttried to gve birth but did not find optimal spot%n", this);
             }
-            return;
+            return false;
         }
         Carnivore c = new Carnivore(world, birthPlace);
         c.cantMove = Math.abs(rand.nextInt() % 2) + 1;
@@ -33,6 +33,7 @@ public class Carnivore extends Animal {
             System.out.printf("%s\tgave birth at %s\tNew Energy: %d%n",
                 this, birthPlace, energy);
         }
+        return true;
     }
 
     @Override

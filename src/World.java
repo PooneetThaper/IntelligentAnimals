@@ -181,15 +181,6 @@ public class World {
 
         for (int i = 0; i < Animals.size(); i++) {
             Animal currentAnimal = Animals.get(i);
-            // currentAnimal.act();
-            if (!currentAnimal.canMove()){
-                //Can this animal move yet after being born
-                if (showAll) {
-                    System.out.printf("%s\tcan't move yet.\tAge: %d, Energy: %d%n",
-                        currentAnimal, currentAnimal.getAge(), currentAnimal.getEnergy());
-                }
-                continue;
-            }
 
             // All animals that can move get one move
             currentAnimal.act();
@@ -209,11 +200,6 @@ public class World {
     public void updatePlants() {
         for (int i = 0; i < Plants.size(); i++){
             Plant currentPlant = Plants.get(i);
-            // temporary fix for removing plants
-            Location loc = currentPlant.getLocation();
-            if (Map[loc.getX()][loc.getY()] != currentPlant) {
-                Plants.remove(currentPlant);
-            }
             currentPlant.act();
         }
     }
