@@ -12,14 +12,13 @@ public class Herbivore extends Animal {
     }
 
     @Override
-    public void giveBirth(){
+    public void giveBirth() {
         //Choose the best spot to give birth to new baby
         Location birthPlace = super.getBestBirthPlace(this.weighOptions(true));
         //Not in the best position to give birth;
         if (birthPlace == null) {
             if (world.getShowAll()) {
-                System.out.print(this);
-                System.out.println("\t tried to gve birth but did not find optimal spot");
+                System.out.printf("%s\ttried to gve birth but did not find optimal spot%n", this);
             }
             return;
         }
@@ -30,9 +29,8 @@ public class Herbivore extends Animal {
         // multiply too quickly after every turn
         reproduceAge += rand.nextInt(2) + 2;
         if (world.getShowAll()) {
-            System.out.print(this);
-            System.out.print("\tgave birth at " + birthPlace);
-            System.out.println(String.format("\tNew Energy: %d", energy));
+            System.out.printf("%s\tgave birth at %s\tNew Energy: %d%n",
+                this, birthPlace, energy);
         }
     }
 

@@ -41,8 +41,13 @@ public class Location {
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Location) {
-            return ((((Location) obj).getX() == this.x) && (((Location) obj).getY() == this.y));
-        } else return false;
+            int objX = ((Location)obj).getX();
+            int objY = ((Location)obj).getY();
+            return (objX == this.x) && (objY == this.y);
+        } 
+        else {
+            return false;
+        }
     }
 
     public static double distance(Location current, ArrayList<Location> list) {

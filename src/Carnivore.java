@@ -18,8 +18,7 @@ public class Carnivore extends Animal {
         //Not in the best position to give birth;
         if (birthPlace == null) {
             if (world.getShowAll()) {
-                System.out.print(this);
-                System.out.println("\t tried to gve birth but did not find optimal spot");
+                System.out.printf("%s\ttried to gve birth but did not find optimal spot%n", this);
             }
             return;
         }
@@ -31,12 +30,10 @@ public class Carnivore extends Animal {
         reproduceAge += rand.nextInt(3) + 3;
         
         if (world.getShowAll()) {
-            System.out.print(this);
-            System.out.print("\tgave birth at " + birthPlace);
-            System.out.println(String.format("\tNew Energy: %d", energy));
+            System.out.printf("%s\tgave birth at %s\tNew Energy: %d%n",
+                this, birthPlace, energy);
         }
     }
-
 
     @Override
     public char getChar(){

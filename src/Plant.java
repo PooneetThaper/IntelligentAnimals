@@ -16,10 +16,8 @@ public class Plant extends Entity implements Living {
         if (!isAlive) return;
         if (age > lifespan || getEnergy() <= 0) {
             if (world.getShowAll()) {
-                System.out.print(this);
-                System.out.print("\tdied at ");
-                System.out.print(location);
-                System.out.println(String.format("\tAge: %d", age));
+                System.out.printf("%s\tdied at %s\tAge: %d%n",
+                    this, location, age);
             }
             removeSelfFromWorld();
             return;

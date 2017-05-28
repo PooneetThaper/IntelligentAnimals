@@ -18,10 +18,7 @@ public class World {
     }
 
     public World(int lenX, int lenY, boolean showAll) {
-        this.lenX = lenX;
-        this.lenY = lenY;
-        Map = new Entity[lenX][lenY];
-        random = new Random();
+        this(lenX, lenY);
         this.showAll = showAll;
     }
 
@@ -94,27 +91,6 @@ public class World {
         }
     }
 
-    // public Carnivore addCarnivore(Location location) {
-    //     Animal c = new Carnivore(this, location);
-    //     Map[location.getX()][location.getY()] = c;
-    //     Animals.add(c);
-    //     return (Carnivore) c;
-    // }
-
-    // public Herbivore addHerbivore(Location location) {
-    //     Animal h = new Herbivore(this, location);
-    //     Map[location.getX()][location.getY()] = h;
-    //     Animals.add(h);
-    //     return (Herbivore) h;
-    // }
-
-    // public Plant addPlant(Location location) {
-    //     Plant p = new Plant(this, location);
-    //     Map[location.getX()][location.getY()] = p;
-    //     Plants.add(p);
-    //     return p;
-    // }
-
     public void spawnPlant() {
         int x = Math.abs(random.nextInt()) % lenX;
         int y = Math.abs(random.nextInt()) % lenY;
@@ -122,9 +98,7 @@ public class World {
         if (isEmpty(loc)) {
             Plant added = new Plant(this, loc);
             if (showAll) {
-                System.out.print(added);
-                System.out.print("\tspawned at ");
-                System.out.println(loc);
+                System.out.printf("%s\tspawned at %s%n", added, loc);
             }
         }
     }
@@ -146,7 +120,7 @@ public class World {
             int currentY = current.getY();
 
             if (Map[currentX][currentY] != null) {
-                for (char target: targets){
+                for (char target : targets){
                     if (Map[currentX][currentY].getChar() == target) {
                         found.add(current);
                         if (!exhaustive) {
@@ -211,9 +185,8 @@ public class World {
             if (!currentAnimal.canMove()){
                 //Can this animal move yet after being born
                 if (showAll) {
-                    System.out.print(currentAnimal);
-                    System.out.print("\tcant move yet. ");
-                    System.out.println(String.format("\tAge: %d, Energy: %d",currentAnimal.getAge(), currentAnimal.getEnergy()));
+                    System.out.printf("%s\tcan't move yet.\tAge: %d, Energy: %d%n",
+                        currentAnimal, currentAnimal.getAge(), currentAnimal.getEnergy());
                 }
                 continue;
             }
@@ -238,12 +211,12 @@ public class World {
     public void updatePlants() {
         for (int i = 0; i < Plants.size(); i++){
             Plant currentPlant = Plants.get(i);
-            if (!isPlant(currentPlant.getLocation())) {
+            // temporary fix for removing plants
+            Location loc = currentPlant.getLocation();
+            if (Map[loc.getX()][loc.getY()] != currentPlant) {
                 Plants.remove(currentPlant);
             }
-            else {
-                currentPlant.act();
-            }
+            currentPlant.act();
         }
     }
 

@@ -96,14 +96,13 @@ public abstract class Animal extends Entity implements Living {
         return age >= cantMove;
     }
 
-    public int weighOptions(boolean noStay){
+    public int weighOptions(boolean noStay) {
         int locationX = location.getX();
         int locationY = location.getY();
         //Use full list of all carnivores and plants in a certain area
         ArrayList<Location> nearestDangers = world.exhaustiveBFS(location, dangerChars, MAX_SIGHT_DISTANCE - 1, true);
         ArrayList<Location> nearestPlant = world.exhaustiveBFS(location, foodChars, MAX_SIGHT_DISTANCE, true);
         double[] possibleMoves = new double[5];
-
 
         // Consider no move
         if (nearestDangers.size() > 0){
@@ -224,28 +223,33 @@ public abstract class Animal extends Entity implements Living {
     }
 
     public void eat(Living eaten) {
-        energy += eaten.getEnergy();
-        System.out.println(eaten);
+        // char eatenAsChar = ((Entity)eaten).getChar();
+        // if (new String(foodChars).indexOf(eatenAsChar) == -1) {
+        //     if (world.getShowAll()) {
+        //         System.out.printf("%s\tcan't eat %s%n", this, eaten);
+        //     }
+        //     return;
+        // }
+        energy += (eaten).getEnergy();
         eaten.removeSelfFromWorld();
         if (world.getShowAll()) {
-            System.out.print(this);
-            System.out.print("\tate ");
-            System.out.print(eaten);
-            System.out.print(" at ");
-            System.out.print(location);
-            // System.out.println(String.format("\tNew Energy: %d", energy));
-            System.out.printf("\tNew Energy: %d", energy);
+            System.out.printf("%s\tate %s at %s\tNew Energy: %d%n", 
+                this, eaten, location, energy);
         }
     }
 
-    private void tryToEat(Entity[][] map) {
+    private boolean tryToEat(Entity[][] map) {
         int currentX = location.getX();
         int currentY = location.getY();
         char currentEntity = map[currentX][currentY].getChar();
 
         // Is this animal allowed to eat the entity at the current location
-        if (!Arrays.asList(foodChars).contains(currentEntity)) {
-            return;
+        if (new String(foodChars).indexOf(currentEntity) == -1) {
+            if (world.getShowAll()) {
+                Entity e = map[currentX][currentY];
+                System.out.printf("%s\tcan't eat %s%n", this, e);
+            }
+            return false;
         }
         Living eaten;
         switch (currentEntity) {
@@ -262,40 +266,41 @@ public abstract class Animal extends Entity implements Living {
                 eat(eaten);
                 break;
         }
+        return true;
     }
 
     public void act() {
         if (!isAlive) return;
         Entity[][] map = world.getMap();
-        Location start = location;
-        int startX = location.getX();
-        int startY = location.getY();
+        Location start = new Location(location);
+        int startX = start.getX();
+        int startY = start.getY();
 
         if (age > lifespan || energy < 0) {
             if (world.getShowAll()) {
-                System.out.print(this);
-                System.out.print("\tdied at ");
-                System.out.print(location);
-                System.out.println(String.format("\tAge: %d, Energy: %d", age, energy));
+                System.out.printf("%s\tdied at %s\tAge: %d, Energy: %d%n", 
+                    this, location, age, energy);
             }
             this.removeSelfFromWorld();
             return;
         }
         move(weighOptions());
+        Location end = new Location(location);
         int endX = location.getX();
         int endY = location.getY();
 
         if (world.getShowAll()) {
-            System.out.print(this);
-            System.out.println("\t" + start + " -> " + location);
+            System.out.printf("%s\t%s -> %s%n", this, start, end);
         }
 
-        if (map[endX][endY] != null && map[endX][endY] != this) {
+        // boolean shouldMove;
+        if (!world.isEmpty(end) && map[endX][endY] != this) {
             tryToEat(map);
         }
+
         map[endX][endY] = this;
 
-        if (startX != endX || startY != endY) {
+        if (!start.equals(end)) {
             map[startX][startY] = null;
         }
 
@@ -311,10 +316,8 @@ public abstract class Animal extends Entity implements Living {
         removeSelfFromWorld();
         Omnivore o = new Omnivore(this);
         if (world.getShowAll()) {
-            System.out.print(this);
-            System.out.print("\tbecame desperate and became an Omnivore at ");
-            System.out.print(location);
-            System.out.println(String.format("\t Energy: %d", energy));
+            System.out.printf("%s\tbecame desperate and became an Omnivore at %s\tEnergy: %d%n",
+                this, location, energy);
         }
     }
 }

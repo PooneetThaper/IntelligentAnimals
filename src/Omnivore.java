@@ -1,7 +1,6 @@
 import java.util.Random;
 
 public class Omnivore extends Animal {
-
     private Random rand = new Random();
 
     public Omnivore(World world, Location location) {
@@ -17,7 +16,7 @@ public class Omnivore extends Animal {
         energy = animal.getEnergy();
         age = animal.getAge();
     }
-
+    
     @Override
     public void giveBirth() {
         //Choose the best spot to give birth to new baby
@@ -25,8 +24,7 @@ public class Omnivore extends Animal {
         //Not in the best position to give birth;
         if (birthPlace == null) {
             if (world.getShowAll()) {
-                System.out.print(this);
-                System.out.println("\t tried to gve birth but did not find optimal spot");
+                System.out.printf("%s\ttried to gve birth but did not find optimal spot%n", this);
             }
             return;
         }
@@ -38,9 +36,8 @@ public class Omnivore extends Animal {
         reproduceAge += rand.nextInt(2) + 1;
 
         if (world.getShowAll()) {
-            System.out.print(this);
-            System.out.print("\tgave birth at " + birthPlace);
-            System.out.println(String.format("\tNew Energy: %d", energy));
+            System.out.printf("%s\tgave birth at %s\tNew Energy: %d%n",
+                this, birthPlace, energy);
         }
     }
 
