@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 /**
- * Represents a World in which all of the entities belong to the World exist.
+ * Represents a World in which all of the entities that belong in the World exist.
  */
 public class World {
     /**

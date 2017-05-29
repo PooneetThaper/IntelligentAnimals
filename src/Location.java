@@ -114,9 +114,9 @@ public class Location {
 
     /**
      * Gets the average distance between this Location and other Locations provided in an ArrayList.
-     * @param current The current location from which to take the distances
-     * @param list The list of locations to which the distances should be measured
-     * @return The average distance from the current location to the list of locations
+     * @param current The current location from which to take the distances.
+     * @param list The list of locations to which the distances should be measured.
+     * @return The average distance from the current location to the list of locations.
      */
     public static double distance(Location current, ArrayList<Location> list) {
         double sum = 0;
@@ -128,7 +128,7 @@ public class Location {
 
     /**
      * Gets this Location's String representation, formatted (x,y).
-     * @return this Location's String representation
+     * @return this Location's String representation.
      */
     @Override
     public String toString() {
