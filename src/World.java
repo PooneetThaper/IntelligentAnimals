@@ -42,14 +42,23 @@ public class World {
 
     // Adding living things methods
 
-    public void initialSpawn(int numCarnivores, int numHerbivores, int numPlants, int numRocks) {
+    public void initialSpawn(int numCarnivores, int numHerbivores, int numPlants, int numRocks, int numTrees) {
         while (numRocks > 0) {
             int x = Math.abs(random.nextInt()) % lenX;
             int y = Math.abs(random.nextInt()) % lenY;
             Location loc = new Location(x, y);
             if (isEmpty(loc)) {
-                Rock c = new Rock(this, loc);
+                Rock r = new Rock(this, loc);
                 numRocks--;
+            }
+        }
+        while (numTrees > 0) {
+            int x = Math.abs(random.nextInt()) % lenX;
+            int y = Math.abs(random.nextInt()) % lenY;
+            Location loc = new Location(x, y);
+            if (isEmpty(loc)) {
+                Tree t = new Tree(this, loc);
+                numTrees--;
             }
         }
         while (numCarnivores > 0) {
