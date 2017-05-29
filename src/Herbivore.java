@@ -58,7 +58,7 @@ public class Herbivore extends Animal {
 
     /**
      * Gets the Herbivore's character representation.
-     * @return this Herbivore's character representation, '&'
+     * @return this Herbivore's character representation, ampersand (written out here due to html issues with character)
      */
     @Override
     public char getChar(){
