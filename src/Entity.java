@@ -1,10 +1,38 @@
+/**
+ * Represents an Entity that exists in the world.
+ */
 public abstract class Entity {
+    /**
+     * The world in which the Entity exists in.
+     */
     protected World world;
+
+    /**
+     * The location in the world where the Entity is located.
+     */
     protected Location location;
-    protected int age; // everything should have an age
-    protected boolean isAlive; // if we're adding rocks, then i guess they're always alive?
+
+    /**
+     * The number of cycles in which the Entity has existed in the world for.
+     */
+    protected int age;
+
+    /**
+     * A boolean value that states whether or not an Entity is still alive.
+     */
+    protected boolean isAlive;
+
+    /**
+     * A variable used to keep track of whether or not the Entity has moved during the world's current cycle.
+     */
     protected int clock;
-    
+
+    /**
+     * Creates a new Entity in the given world and location. Initiates the Entity's age to 0, its isAlive field to
+     * true, and its clock to its world's clock.
+     * @param world The world in which the Entity exists in.
+     * @param location The location in the world where the Entity is located.
+     */
     public Entity(World world, Location location) {
         this.world = world;
         world.addEntity(location, this);
@@ -14,30 +42,61 @@ public abstract class Entity {
         clock = world.getClock();
     }
 
+    /**
+     * Gets the world where the Entity exists in.
+     * @return this Entity's world.
+     */
     public World getWorld() {return world;}
+
+    /**
+     * Gets the location where the Entity is located in the world.
+     * @return this Entity's location.
+     */
     public Location getLocation() {return location;}
+
+    /**
+     * Gets the number of cycles in which the Entity has existed in the world for.
+     * @return this Entity's age.
+     */
     public int getAge() {return age;}
+
+    /**
+     * Gets the living status of the Entity.
+     * @return this Entity's isAlive field. If it is true, then the Entity is still alive. Otherwise, it is not.
+     */
     public boolean isAlive() {return isAlive;}
+
+    /**
+     * Gets the clock of the Entity, which is used to determine whether or not the Entity moved during the current
+     * cycle or iteration.
+     * @return this Entity's clock.
+     */
     public int getClock() {return clock;}
 
+    /**
+     * All non-abstract subclasses should have an act() method which allows them to do something during each cycle
+     * or iteration.
+     */
     public abstract void act();
+
+    /**
+     * All non-abstract subclasses should have a getChar() method.
+     * @return the character representation of this Entity in the world when printed in the terminal.
+     */
     public abstract char getChar();
 
-    // removes this Entity from the world
+    /**
+     * Removes the Entity from the world. It removes itself from its world's map so it can no longer be referenced
+     * by the world. It also sets its isAlive status to false.
+     */
     public void removeSelfFromWorld() {
-        // if it is already not alive, we can't move it because
-        // it shouldn't be there in the first place
         if (!isAlive) {
             throw new IllegalStateException("Entity is not in the world");
         }
-        // if this entity is not in the location it should be in,
-        // something went horribly wrong
         Entity[][] map = world.getMap();
         int x = location.getX();
         int y = location.getY();
         if (map[x][y] != this) {
-            // throw new IllegalStateException("Location loc does not contain this entity");
-            //throw new IllegalStateException("Location " + location + " does not contain " + this);
             System.out.println("Location " + location + " does not contain " + this);
         }else{
             map[x][y] = null;
@@ -49,8 +108,6 @@ public abstract class Entity {
             world.getPlants().remove(this);
         }
         map[x][y] = null;
-        // world = null;
-        // location = null;
         isAlive = false;
     }
 }
