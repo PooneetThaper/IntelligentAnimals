@@ -238,24 +238,30 @@ public class World {
     // Pathfinding Methods
 
     /**
-     *
-     * @param start
-     * @param target
-     * @param maxDist
-     * @param exhaustive
-     * @return
+     * Searches for all instances of the entity matching the given character target within a given distance maxDist.
+     * Starts the breadth first search at the given Location start and searches in a flood fill as long as the distance
+     * of the current location from the start location is less than maxDist. If boolean exhaustive is false, the search
+     * stops at the first found instance. Otherwise, returns all found instances in the given area.
+     * @param start The starting location of the breadth first search
+     * @param target The character of the type that is being searched for
+     * @param maxDist The maximum distance that the search is allowed to look
+     * @param exhaustive Whether or not to find all instances (true) or only one (false)
+     * @return An array of found instances given the parameters and the state of this World
      */
     public ArrayList<Location> exhaustiveBFS(Location start, char target, double maxDist, boolean exhaustive) {
         return exhaustiveBFS(start,new char[]{target}, maxDist, exhaustive);
     }
 
     /**
-     *
-     * @param start
-     * @param targets
-     * @param maxDist
-     * @param exhaustive
-     * @return
+     * Searches for all instances of the entity matching the any of the given characters in array targets within a
+     * given distance maxDist. Starts the breadth first search at the given Location start and searches in a flood fill
+     * as long as the distance of the current location from the start location is less than maxDist. If boolean
+     * exhaustive is false, the search stops at the first found instance. Otherwise, returns all found instances in the given area.
+     * @param start The starting location of the breadth first search
+     * @param targets The array of characters of the types that are being searched for
+     * @param maxDist The maximum distance that the search is allowed to look
+     * @param exhaustive Whether or not to find all instances (true) or only one (false)
+     * @return An array of found instances given the parameters and the state of this World
      */
     public ArrayList<Location> exhaustiveBFS(Location start, char[] targets, double maxDist, boolean exhaustive) {
         ArrayList<Location> found = new ArrayList<>();
@@ -302,12 +308,31 @@ public class World {
         return found;
     }
 
+    /**
+     * Determines if the given location (next) is valid for breadth first search given the start location, maxDistance,
+     * and forbidden characters.
+     * @param next The current location in consideration for search
+     * @param start The start location of the search
+     * @param maxDistance The maximum distance the search is allowed to look
+     * @param forbidden The characters that can't be move onto
+     * @return
+     */
     private boolean validLocation(Location next, Location start, double maxDistance, char forbidden) {
         int nextX = next.getX();
         int nextY = next.getY();
         return validLocation(nextX, nextY, start, maxDistance, forbidden);
     }
 
+    /**
+     * Determines if the given location (next) is valid for breadth first search given the start location, maxDistance,
+     * and forbidden characters.
+     * @param x The x coordinate of the current location in consideration for search
+     * @param y The y coordinate of the current location in consideration for search
+     * @param start The start location of the search
+     * @param maxDistance The maximum distance the search is allowed to look
+     * @param forbidden The characters that can't be move onto
+     * @return
+     */
     private boolean validLocation(int x, int y, Location start, double maxDistance, char forbidden) {
         boolean notBlocked = true;
         int startX = start.getX();

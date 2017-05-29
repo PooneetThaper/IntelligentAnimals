@@ -1,5 +1,5 @@
 /**
- * Created by Pthaper on 5/28/17.
+ * Interface to indicate that this type is an obstacle that cannot me moved through.
  */
 public interface Obstacle {
     // This doesn't have any code, it just has to identify if something is an obstacle
