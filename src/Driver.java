@@ -27,13 +27,13 @@ public class Driver {
 
         // By default World shows all events verbosely
         // To prevent this, add a parameter false after the current parameters of constructor
-        World w = new World(xDim, yDim);
+        World w = new World(xDim, yDim, false);
         //World w = new World(xDim, yDim, false);
         System.out.println(w); // Blank map
 
-        //Start off with about 2.9 percent as Carnivores, 10 percent as Herbivores, and 50 percent as plants
-        System.out.print("Generating living creatures (2.9% carnivores, 10% herbivores, and 50% plants of all spaces)\n");
-        w.initialSpawn(xDim * yDim / 35,  xDim * yDim / 10, xDim * yDim / 5);
+        //Start off with about 2.9 percent as Carnivores, 20 percent as Herbivores, and 50 percent as plants
+        System.out.print("Generating living creatures (2.9% carnivores, 20% herbivores, and 50% plants of all spaces\n");
+        w.initialSpawn(xDim * yDim / 35 + 1,  xDim * yDim / 5, xDim * yDim / 5);
         System.out.println(w); // Initial map (Clock = 0)
 
         // DOCUMENTATION:

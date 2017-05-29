@@ -4,7 +4,7 @@ import java.util.Random;
 
 public abstract class Animal extends Entity implements Living {
     protected static final double MAX_SIGHT_DISTANCE = 10.0;
-    protected static final double MAX_ENERGY = 20; // energy at which animal stops going after food
+    protected static final double MAX_ENERGY = 40; // energy at which animal stops going after food
     protected final int lifespan; // age when the animal dies
     protected final int reproduceEnergy; // minimum energy needed to reproduce
     protected int energy; // current energy
@@ -17,8 +17,8 @@ public abstract class Animal extends Entity implements Living {
     public Animal(World world, Location location) {
         super(world, location);
         lifespan = rand.nextInt(3) + 15; // lifespan can be from 15 to 17
-        reproduceEnergy = rand.nextInt(3) + 7; // reproduceEnergy can be from 7 to 9
-        energy = rand.nextInt(6) + 6; // initial energy can be from 6 to 11
+        reproduceEnergy = rand.nextInt(3) + 27; // reproduceEnergy can be from 27 to 29
+        energy = rand.nextInt(5) + 10; // initial energy can be from 10 to 14
         reproduceAge = rand.nextInt(3) + 7; // reproduceAge can be from 8 to 10
     }
     
@@ -111,8 +111,8 @@ public abstract class Animal extends Entity implements Living {
         int locationX = location.getX();
         int locationY = location.getY();
         //Use full list of all carnivores and plants in a certain area
-        ArrayList<Location> nearestDangers = world.exhaustiveBFS(location, dangerChars, MAX_SIGHT_DISTANCE - 1, true);
-        ArrayList<Location> nearestPlant = world.exhaustiveBFS(location, foodChars, MAX_SIGHT_DISTANCE, true);
+        ArrayList<Location> nearestDangers = world.exhaustiveBFS(location, dangerChars, MAX_SIGHT_DISTANCE , true);
+        ArrayList<Location> nearestFood = world.exhaustiveBFS(location, foodChars, MAX_SIGHT_DISTANCE, true);
         double[] possibleMoves = new double[5];
 
         // Consider no move
@@ -122,9 +122,9 @@ public abstract class Animal extends Entity implements Living {
         }
 
         if (this.energy < MAX_ENERGY) {
-            if (nearestPlant.size() > 0){
-                possibleMoves[0] -= Location.distance(location, nearestPlant.get(0));
-                possibleMoves[0] -= Location.distance(location, nearestPlant);
+            if (nearestFood.size() > 0){
+                possibleMoves[0] -= Location.distance(location, nearestFood.get(0));
+                possibleMoves[0] -= Location.distance(location, nearestFood);
             }
 
         }
@@ -139,13 +139,13 @@ public abstract class Animal extends Entity implements Living {
             }
 
             if (this.energy < MAX_ENERGY) {
-                if (nearestPlant.size() > 0){
-                    possibleMoves[1] -= Location.distance(upLocation, nearestPlant.get(0));
-                    possibleMoves[1] -= Location.distance(upLocation, nearestPlant);
+                if (nearestFood.size() > 0){
+                    possibleMoves[1] -= Location.distance(upLocation, nearestFood.get(0));
+                    possibleMoves[1] -= Location.distance(upLocation, nearestFood);
                 }
             }
             if (!world.isEmpty(upLocation)) {
-                if (world.isPlant(upLocation)){
+                if (new String(foodChars).indexOf(world.getLocationChar(upLocation)) != -1){
                     if (this.energy < MAX_ENERGY) possibleMoves[1] += 15;
                 }
                 else possibleMoves[1] -= 15;
@@ -161,14 +161,14 @@ public abstract class Animal extends Entity implements Living {
             }
 
             if (this.energy < MAX_ENERGY) {
-                if (nearestPlant.size() > 0){
-                    possibleMoves[2] -= location.distance(rightLocation, nearestPlant.get(0));
-                    possibleMoves[2] -= location.distance(rightLocation, nearestPlant);
+                if (nearestFood.size() > 0){
+                    possibleMoves[2] -= location.distance(rightLocation, nearestFood.get(0));
+                    possibleMoves[2] -= location.distance(rightLocation, nearestFood);
                 }
 
             }
             if (!world.isEmpty(rightLocation)) {
-                if (world.isPlant(rightLocation)){
+                if (new String(foodChars).indexOf(world.getLocationChar(rightLocation)) != -1){
                     if (this.energy < MAX_ENERGY) possibleMoves[2] += 15;
                 }
                 else possibleMoves[2] -= 15;
@@ -184,13 +184,13 @@ public abstract class Animal extends Entity implements Living {
             }
 
             if (this.energy < MAX_ENERGY) {
-                if (nearestPlant.size() > 0){
-                    possibleMoves[3] -= Location.distance(downLocation, nearestPlant.get(0));
-                    possibleMoves[3] -= Location.distance(downLocation, nearestPlant);
+                if (nearestFood.size() > 0){
+                    possibleMoves[3] -= Location.distance(downLocation, nearestFood.get(0));
+                    possibleMoves[3] -= Location.distance(downLocation, nearestFood);
                 }
             }
             if (!world.isEmpty(downLocation)) {
-                if (world.isPlant(downLocation)){
+                if (new String(foodChars).indexOf(world.getLocationChar(downLocation)) != -1){
                     if (this.energy < MAX_ENERGY) possibleMoves[3] += 15;
                 }
                 else possibleMoves[3] -= 15;
@@ -206,13 +206,13 @@ public abstract class Animal extends Entity implements Living {
             }
 
             if (this.energy < MAX_ENERGY) {
-                if (nearestPlant.size()>0){
-                    possibleMoves[4] -= Location.distance(leftLocation, nearestPlant.get(0));
-                    possibleMoves[4] -= Location.distance(leftLocation, nearestPlant);
+                if (nearestFood.size()>0){
+                    possibleMoves[4] -= Location.distance(leftLocation, nearestFood.get(0));
+                    possibleMoves[4] -= Location.distance(leftLocation, nearestFood);
                 }
             }
             if (!world.isEmpty(leftLocation)) {
-                if (world.isPlant(leftLocation)){
+                if (new String(foodChars).indexOf(world.getLocationChar(leftLocation)) != -1){
                     if (this.energy < MAX_ENERGY) possibleMoves[4] += 15;
                 }
                 else possibleMoves[4] -= 15;
@@ -299,8 +299,10 @@ public abstract class Animal extends Entity implements Living {
 
         // if animal is a newborn and can't move, it should just age up and lose energy
         if (!canMove()) {
-            age++;
-            energy--;
+            if (clock != world.getClock()) {
+                age++;
+                clock = world.getClock();
+            }
             return;
         }
 
@@ -308,7 +310,10 @@ public abstract class Animal extends Entity implements Living {
         if (age >= reproduceAge && energy > reproduceEnergy) {
             // if it gave birth successfully, it can't move this turn
             if (giveBirth()) {
-                age++;
+                if (clock != world.getClock()) {
+                    age++;
+                    clock = world.getClock();
+                }
                 return;
             }
         }
@@ -325,7 +330,7 @@ public abstract class Animal extends Entity implements Living {
         int endY = location.getY();
 
         if (world.getShowAll()) {
-            System.out.printf("%s\t%s -> %s%n", this, start, end);
+            System.out.printf("%s\t%s -> %s \tAge: %d, Energy: %d%n", this, start, end, age, energy);
         }
 
         boolean shouldMove = false;
@@ -360,14 +365,12 @@ public abstract class Animal extends Entity implements Living {
 
         if (clock != world.getClock()) {
             age++;
-            energy--;
             clock = world.getClock();
-            if (energy < 5 && !(this instanceof Omnivore)) {
-                desperate();
-            }
         }
-        age++;
         energy--;
+        if (energy < 8 && !(this instanceof Omnivore)) {
+            desperate();
+        }
     }
 
     private void desperate() {

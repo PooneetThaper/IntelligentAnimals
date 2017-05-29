@@ -37,8 +37,10 @@ public abstract class Entity {
         int y = location.getY();
         if (map[x][y] != this) {
             // throw new IllegalStateException("Location loc does not contain this entity");
-            throw new IllegalStateException("Location " + location + " does not contain " + this);
-
+            //throw new IllegalStateException("Location " + location + " does not contain " + this);
+            System.out.println("Location " + location + " does not contain " + this);
+        }else{
+            map[x][y] = null;
         }
         if (this instanceof Animal) {
             world.getAnimals().remove(this);

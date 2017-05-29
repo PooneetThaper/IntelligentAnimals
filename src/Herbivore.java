@@ -23,7 +23,7 @@ public class Herbivore extends Animal {
             return false;
         }
         Herbivore h = new Herbivore(world, birthPlace);
-        h.cantMove = Math.abs(rand.nextInt() % 2) + 1;
+        h.cantMove = Math.abs(rand.nextInt() % 3) + 3;
         energy -= h.energy;
         // increase age when carnivores can reproduce so they won't
         // multiply too quickly after every turn

@@ -131,22 +131,22 @@ public class World {
             }
 
             Location upLocation = new Location(currentX, currentY - 1);
-            if (validLocation(upLocation, start, maxDist, ' ') && !queue.contains(upLocation) && !seen.contains(upLocation)) {
+            if (validLocation(upLocation, start, maxDist, ' ') && !(Map[currentX][currentY-1] instanceof Obstacle) && !queue.contains(upLocation) && !seen.contains(upLocation)) {
                 queue.enqueue(upLocation);
             }
 
             Location rightLocation = new Location(currentX + 1, currentY);
-            if (validLocation(rightLocation, start, maxDist, ' ') && !queue.contains(rightLocation) && !seen.contains(rightLocation)) {
+            if (validLocation(rightLocation, start, maxDist, ' ') && !(Map[currentX+1][currentY] instanceof Obstacle) && !queue.contains(rightLocation) && !seen.contains(rightLocation)) {
                 queue.enqueue(rightLocation);
             }
 
             Location downLocation = new Location(currentX, currentY + 1);
-            if (validLocation(downLocation, start, maxDist, ' ') && !queue.contains(downLocation) && !seen.contains(downLocation)) {
+            if (validLocation(downLocation, start, maxDist, ' ') && !(Map[currentX][currentY+1] instanceof Obstacle) && !queue.contains(downLocation) && !seen.contains(downLocation)) {
                 queue.enqueue(downLocation);
             }
 
             Location leftLocation = new Location(currentX - 1, currentY);
-            if (validLocation(leftLocation, start, maxDist, ' ') && !queue.contains(leftLocation) && !seen.contains(leftLocation)) {
+            if (validLocation(leftLocation, start, maxDist, ' ') && !(Map[currentX-1][currentY] instanceof Obstacle) && !queue.contains(leftLocation) && !seen.contains(leftLocation)) {
                 queue.enqueue(leftLocation);
             }
 
@@ -261,6 +261,10 @@ public class World {
     }
 
     public boolean hasAnimals() {return Animals.size() > 0;}
+
+    public char getLocationChar(Location l){
+        return Map[l.getX()][l.getY()].getChar();
+    }
 
     @Override
     public String toString() {

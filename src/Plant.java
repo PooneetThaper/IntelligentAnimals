@@ -7,7 +7,7 @@ public class Plant extends Entity implements Living {
 
     public Plant(World world, Location location) {
         super(world, location);
-        lifespan = rand.nextInt(3) + 7; // lifespan can be from 7 to 9
+        lifespan = rand.nextInt(4) + 15; // lifespan can be from 15 to 18
     }
 
     public int getLifespan() {return lifespan;}
@@ -29,7 +29,7 @@ public class Plant extends Entity implements Living {
     public int getEnergy() {
         // in case an herbivore eats the plant at its last cycle,
         // it still gets some energy
-        return lifespan - age + 1;
+        return lifespan - age + 5;
     }
 
     @Override

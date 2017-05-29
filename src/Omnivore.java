@@ -11,7 +11,7 @@ public class Omnivore extends Animal {
 
     public Omnivore(Animal animal){
         super(animal.getWorld(),animal.getLocation());
-        foodChars = new char[]{'&','*','@'};
+        foodChars = new char[]{'&','*'};
         dangerChars = new char[]{'@'};
         energy = animal.getEnergy();
         age = animal.getAge();
@@ -29,7 +29,7 @@ public class Omnivore extends Animal {
             return false;
         }
         Omnivore o = new Omnivore(world, birthPlace);
-        o.cantMove = Math.abs(rand.nextInt() % 2) + 1;
+        o.cantMove = Math.abs(rand.nextInt() % 3) + 3;
         energy -= o.energy;
         // increase age when carnivores can reproduce so they won't
         // multiply too quickly after every turn
